@@ -1,0 +1,6 @@
+data/
+initial data/
+reports/
+.vscode
+.venv
+__pycache__
