@@ -19,7 +19,7 @@ def get_excel_file_paths(directory):
     excel_files = [file for file in os.listdir(
         directory) if file.endswith('.xlsx') or file.endswith('.xls')]
     if len(excel_files) == 0:
-        print("No excel files found in the directory.")
+        print(f"No excel files (.xlsx or .xls) files found in {directory}.")
         sys.exit(1)
 
     file_paths = []
@@ -52,7 +52,7 @@ def main():
     parser.add_argument('--directory',
                         type=str,
                         help='The name of the directory where the collected data is stored in excel spreadsheets.',
-                        default='./data',
+                        default='.',
                         required=False)
 
     # Parse the command line arguments
