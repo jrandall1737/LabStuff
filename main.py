@@ -35,6 +35,8 @@ def write_results_file(dc_dictionary, directory):
     results_file_path = os.path.join(
         directory, f'dc_results-{now.strftime("%Y-%m-%d_%H%M%S")}.csv')
 
+    print(f'Creating combined results file {results_file_path}')
+
     # Open a file for writing
     with open(results_file_path, 'w', newline='') as csvfile:
         # Create a CSV writer object
@@ -67,7 +69,9 @@ def main():
 
     for data_file_path in data_files_paths:
         dc = dc_calculation.run_analysis(data_file_path, 12, 0.05)
-        dc_dictionary[os.path.basename(data_file_path)] = dc
+        # get the name of the data file without the path or file extension
+        data_file_name, _ = os.path.splitext(os.path.basename(data_file_path))
+        dc_dictionary[data_file_name] = dc
 
     write_results_file(dc_dictionary, args.directory)
 

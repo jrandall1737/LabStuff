@@ -67,7 +67,7 @@ def find_anchor_points(data, window, error_correction):
         x = data[index-1]
         x_plus_1 = data[index]
         if x_plus_1 > x:
-            percentage_change = abs(x_plus_1 - x) / x_plus_1 * 100
+            percentage_change = abs(x_plus_1 - x) / x * 100
             if (percentage_change < error_correction*100):
                 anchor_points.append(index)
 
@@ -181,6 +181,7 @@ def run_analysis(excel_file_path, window_size, error_correction):
 
         # anchor points
         # mark the points we found as anchor points for validation. This is a sanity check.
+        fig = plt.figure()
         data_range = 100
         rr_subset = rr_data[0:data_range]
         highlight_x = []

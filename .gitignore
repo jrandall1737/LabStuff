@@ -1,6 +1,7 @@
-data/
+data*
 initial data/
 reports/
 .vscode
 .venv
 __pycache__
+*.zip
