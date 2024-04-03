@@ -2,29 +2,7 @@ import csv
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
-import pandas as pd
 import os
-
-
-def read_first_column_excel(excel_path):
-    # Replace 'your_file.xlsx' with the path to your Excel file
-    column_name = 'RR-I(ms):ECG'
-
-    # Read the Excel file
-    df = pd.read_excel(excel_path)
-
-    # Select the column
-    column_data = df[column_name]
-    if column_data.empty:
-        print('Column with name {} not found'.format(column_name))
-        return
-
-    numerical_data = column_data.apply(pd.to_numeric, errors='coerce')
-    numerical_data = numerical_data.dropna()
-
-    return numerical_data
-
-# reads any numerical values in the first column of the CSV file
 
 
 def read_first_column_csv(csv_path):
@@ -102,11 +80,11 @@ def calculate_average_deceleration_capacity(data, window):
     return dc
 
 
-def run_analysis(excel_file_path, window_size, error_correction):
-    print(f"Analyzing data from {excel_file_path}.")
+def run_analysis(rr_data_unfiltered, file_name, window_size, error_correction):
+    print(f"Analyzing data from {file_name}.")
 
     # read the data from the excel file
-    rr_data_unfiltered = read_first_column_excel(excel_file_path)
+
     # remove any outliers from the read data
     rr_data = remove_outliers(rr_data_unfiltered, num_standard_deviations=2)
     # find the anchor points in the data set
@@ -126,8 +104,7 @@ def run_analysis(excel_file_path, window_size, error_correction):
     print(f'Calculated deceleration capacity: {deceleration_capacity}')
 
     # save the figures to a new report
-    root, _ = os.path.splitext(excel_file_path)
-    report_name = root + " report.pdf"
+    report_name = file_name + " report.pdf"
     print(f"Creating report {report_name}.")
 
     # Create a PDF file
@@ -198,5 +175,6 @@ def run_analysis(excel_file_path, window_size, error_correction):
         plt.title('Defined anchor points')
         pdf.savefig(fig)
         plt.close()
+        plt.clf()
 
     return deceleration_capacity

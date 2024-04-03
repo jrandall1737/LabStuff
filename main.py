@@ -1,6 +1,7 @@
 import argparse
 import csv
 import datetime
+import pandas as pd
 import os
 import sys
 
@@ -29,6 +30,33 @@ def get_excel_file_paths(directory):
     return file_paths
 
 
+def create_rr_data_dictionary(excel_path):
+    # Replace 'your_file.xlsx' with the path to your Excel file
+    column_name = 'RR-I(ms):ECG'
+    print(f'Reading file {excel_path}, this can take a while...')
+
+    # Read the Excel file
+    # df = pd.read_excel(excel_path)
+    # Read all sheets from an excel file
+    excel_file_sheets = pd.read_excel(excel_path, sheet_name=None)
+
+    data_dict = dict()
+
+    # Select the column
+    for sheet_name, df in excel_file_sheets.items():
+        column_data = df[column_name]
+        if column_data.empty:
+            print('Column with name {} not found'.format(column_name))
+            continue
+
+        numerical_data = column_data.apply(pd.to_numeric, errors='coerce')
+        numerical_data = numerical_data.dropna()
+        dict_name = get_file_name(excel_path) + "_" + sheet_name
+        data_dict[dict_name] = numerical_data
+
+    return data_dict
+
+
 def write_results_file(dc_dictionary, directory):
     # create a timestamped filename
     now = datetime.datetime.now()
@@ -44,6 +72,12 @@ def write_results_file(dc_dictionary, directory):
 
         for key, value in dc_dictionary.items():
             writer.writerow([key, value])
+
+
+def get_file_name(file_path):
+    # get the name of the data file without the path or file extension
+    data_file_name, _ = os.path.splitext(os.path.basename(file_path))
+    return data_file_name
 
 
 def main():
@@ -68,10 +102,12 @@ def main():
     dc_dictionary = dict()
 
     for data_file_path in data_files_paths:
-        dc = dc_calculation.run_analysis(data_file_path, 12, 0.05)
-        # get the name of the data file without the path or file extension
-        data_file_name, _ = os.path.splitext(os.path.basename(data_file_path))
-        dc_dictionary[data_file_name] = dc
+        rr_data_dict = create_rr_data_dictionary(data_file_path)
+
+        for data_name, rr_data_unfiltered in rr_data_dict.items():
+            dc = dc_calculation.run_analysis(
+                rr_data_unfiltered, data_name, 12, 0.05)
+            dc_dictionary[data_name] = dc
 
     write_results_file(dc_dictionary, args.directory)
 
