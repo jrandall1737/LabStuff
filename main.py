@@ -46,8 +46,9 @@ def create_rr_data_dictionary(excel_path):
     for sheet_name, df in excel_file_sheets.items():
         column_data = df[column_name]
         if column_data.empty:
-            print('Column with name {} not found'.format(column_name))
-            continue
+            print(
+                f'Column with name {column_name} not found in sheet {sheet_name}')
+            exit(1)
 
         numerical_data = column_data.apply(pd.to_numeric, errors='coerce')
         numerical_data = numerical_data.dropna()
