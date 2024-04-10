@@ -31,18 +31,15 @@ def get_excel_file_paths(directory):
 
 
 def create_rr_data_dictionary(excel_path):
-    # Replace 'your_file.xlsx' with the path to your Excel file
     column_name = 'RR-I(ms):ECG'
     print(f'Reading file {excel_path}, this can take a while...')
 
-    # Read the Excel file
-    # df = pd.read_excel(excel_path)
     # Read all sheets from an excel file
     excel_file_sheets = pd.read_excel(excel_path, sheet_name=None)
 
     data_dict = dict()
 
-    # Select the column
+    # Read data from each sheet and store it in a dictionary
     for sheet_name, df in excel_file_sheets.items():
         column_data = df[column_name]
         if column_data.empty:
@@ -75,8 +72,8 @@ def write_results_file(dc_dictionary, directory):
             writer.writerow([key, value])
 
 
+# get the name of the data file without the path or file extension
 def get_file_name(file_path):
-    # get the name of the data file without the path or file extension
     data_file_name, _ = os.path.splitext(os.path.basename(file_path))
     return data_file_name
 

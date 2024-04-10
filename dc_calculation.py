@@ -100,7 +100,6 @@ def run_analysis(rr_data_unfiltered, file_name, window_size, error_correction):
     # report the data
     outliers_removed = len(rr_data_unfiltered) - len(rr_data)
     print(f'Outliers removed: {outliers_removed}')
-
     print(f'Calculated deceleration capacity: {deceleration_capacity}')
 
     # save the figures to a new report
